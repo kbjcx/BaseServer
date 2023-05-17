@@ -2,11 +2,21 @@
 #include "thread_pool.h"
 
 ThreadPool::ThreadPool(int num_workers, int max_tasks)
-        : thread_list_(num_workers), max_tasks_(max_tasks),
-        thread_sum_(num_workers), quit_(false), mutex_{}, cond_{},
-        free_thread(num_workers) {
-    pthread_mutex_init(&mutex_, nullptr);
-    pthread_cond_init(&cond_, nullptr);
+        : thread_list_(num_workers),
+          max_tasks_(max_tasks),
+          remaining_tasks_count_(0),
+          thread_count_(num_workers),
+          idle_thread_count_(num_workers),
+          mutex_(),
+          cond_(),
+          quit_(false) {
+    if (pthread_mutex_init(&mutex_, nullptr) != 0) {
+        throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
+    }
+    
+    if (pthread_cond_init(&cond_, nullptr) != 0) {
+        throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
+    }
     create_threads();
 }
 
@@ -17,7 +27,7 @@ ThreadPool::~ThreadPool() {
     pthread_cond_destroy(&cond_);
 }
 
-void ThreadPool::add_task(ThreadPoolTask* task) {
+void ThreadPool::add_task(ThreadTask* task) {
     pthread_mutex_lock(&mutex_);
     task_list_.push_back(task);
     pthread_cond_signal(&cond_);
@@ -26,7 +36,7 @@ void ThreadPool::add_task(ThreadPoolTask* task) {
 
 void ThreadPool::handle_task() {
     while (!quit_) {
-        ThreadPoolTask* task = nullptr;
+        ThreadTask* task;
         pthread_mutex_lock(&mutex_);
         if (task_list_.empty()) {
             pthread_cond_wait(&cond_, &mutex_);
@@ -45,29 +55,38 @@ void ThreadPool::handle_task() {
         task = task_list_.front();
         task_list_.pop_front();
         pthread_mutex_unlock(&mutex_);
-        if (task != nullptr) {
-            task->function(task->argument);
-        }
+        
+        task->handle();
     }
 }
 
 void ThreadPool::create_threads() {
-    pthread_mutex_lock(&mutex_);
+    if (pthread_mutex_lock(&mutex_) != 0) {
+        throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
+    }
     for (auto& thread : thread_list_) {
         thread.start(this);
     }
-    pthread_mutex_unlock(&mutex_);
+    if (pthread_mutex_unlock(&mutex_) != 0) {
+        throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
+    }
 }
 
 void ThreadPool::cancel_threads() {
-    pthread_mutex_lock(&mutex_);
+    if (pthread_mutex_lock(&mutex_) != 0) {
+        throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
+    }
     quit_ = true;
-    pthread_cond_broadcast(&cond_);
+    if (pthread_cond_broadcast(&cond_) != 0) {
+        throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
+    }
     for (auto& thread : thread_list_) {
         thread.join();
     }
     thread_list_.clear();
-    pthread_mutex_unlock(&mutex_);
+    if (pthread_mutex_unlock(&mutex_) != 0) {
+        throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
+    }
 }
 
 void ThreadPool::Thread_::run(void* arg) {

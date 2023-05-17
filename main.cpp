@@ -4,17 +4,14 @@
 
 void test(void* arg) {
     printf("--------------- \n");
-    sleep(5);
+    sleep(1);
 }
 
 int main() {
-    auto task = new ThreadPoolTask();
-    
-    auto thread_pool = new ThreadPool(10, 100);
-    task->function = test;
+    auto task = new ThreadTask();
+    task->set_task(test, nullptr);
+    auto thread_pool = new ThreadPool(3, 100);
     int i = 100;
-    task->argument = nullptr;
-    task->function(task->argument);
     while (i > 0) {
         thread_pool->add_task(task);
         --i;
@@ -23,6 +20,6 @@ int main() {
         printf("main \n");
         sleep(5);
     }
-    std::cout << "Hello, World!" << std::endl;
+
     return 0;
 }

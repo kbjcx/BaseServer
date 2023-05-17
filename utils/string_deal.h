@@ -1,0 +1,6 @@
+#ifndef BASE_SERVER_UTILS_STRING_DEAL_H_
+#define BASE_SERVER_UTILS_STRING_DEAL_H_
+
+
+
+#endif

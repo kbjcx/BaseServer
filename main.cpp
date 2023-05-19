@@ -10,7 +10,7 @@ void test(void* arg) {
 int main() {
     auto task = new ThreadTask();
     task->set_task(test, nullptr);
-    auto thread_pool = new ThreadPool(3, 100);
+    auto thread_pool = new thread_pool(3, 100);
     int i = 100;
     while (i > 0) {
         thread_pool->add_task(task);

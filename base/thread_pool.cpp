@@ -1,7 +1,7 @@
 #include <cstdio>
 #include "thread_pool.h"
 
-ThreadPool::ThreadPool(int num_workers, int max_tasks)
+thread_pool::thread_pool(int num_workers, int max_tasks)
         : thread_list_(num_workers),
           max_tasks_(max_tasks),
           remaining_tasks_count_(0),
@@ -20,21 +20,21 @@ ThreadPool::ThreadPool(int num_workers, int max_tasks)
     create_threads();
 }
 
-ThreadPool::~ThreadPool() {
+thread_pool::~thread_pool() {
     cancel_threads();
     
     pthread_mutex_destroy(&mutex_);
     pthread_cond_destroy(&cond_);
 }
 
-void ThreadPool::add_task(ThreadTask* task) {
+void thread_pool::add_task(ThreadTask* task) {
     pthread_mutex_lock(&mutex_);
     task_list_.push_back(task);
     pthread_cond_signal(&cond_);
     pthread_mutex_unlock(&mutex_);
 }
 
-void ThreadPool::handle_task() {
+void thread_pool::handle_task() {
     while (!quit_) {
         ThreadTask* task;
         pthread_mutex_lock(&mutex_);
@@ -60,7 +60,7 @@ void ThreadPool::handle_task() {
     }
 }
 
-void ThreadPool::create_threads() {
+void thread_pool::create_threads() {
     if (pthread_mutex_lock(&mutex_) != 0) {
         throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
     }
@@ -72,7 +72,7 @@ void ThreadPool::create_threads() {
     }
 }
 
-void ThreadPool::cancel_threads() {
+void thread_pool::cancel_threads() {
     if (pthread_mutex_lock(&mutex_) != 0) {
         throw ThreadPoolException(THREADPOOL_LOCK_FAILURE, __FILE__, __LINE__);
     }
@@ -89,7 +89,7 @@ void ThreadPool::cancel_threads() {
     }
 }
 
-void ThreadPool::Thread_::run(void* arg) {
-    auto thread_pool = (ThreadPool*) arg;
+void thread_pool::Thread_::run(void* arg) {
+    auto thread_pool = (thread_pool*) arg;
     thread_pool->handle_task();
 }

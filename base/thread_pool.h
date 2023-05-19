@@ -37,7 +37,7 @@ private:
 };
 
 
-class ThreadPool {
+class thread_pool {
 public:
     enum ShutdownType {
         IMMEDIATE_SHUTDOWN = 1,
@@ -53,8 +53,8 @@ public:
         THREADPOOL_GRACEFUL = 1
     };
     
-    ThreadPool(int num_workers, int max_jobs);
-    ~ThreadPool();
+    thread_pool(int num_workers, int max_jobs);
+    ~thread_pool();
     
     void add_task(ThreadTask* task);
     
@@ -100,30 +100,30 @@ private:
 
 class ThreadPoolException : public std::exception {
 public:
-    ThreadPoolException(ThreadPool::ErrorType error_type,
-                                 const char* filename,
-                                 int line_num)
+    ThreadPoolException(thread_pool::ErrorType error_type,
+                        const char* filename,
+                        int line_num)
     : error_type_(error_type),
       line_num_(line_num),
       filename_(filename),
       message_() {
         switch (error_type_) {
-            case ThreadPool::THREADPOOL_LOCK_FAILURE:
+            case thread_pool::THREADPOOL_LOCK_FAILURE:
                 write_message("thread pool mutex or cond error");
                 break;
-            case ThreadPool::THREADPOOL_INVALID:
+            case thread_pool::THREADPOOL_INVALID:
                 write_message("thread pool is invalid");
                 break;
-            case ThreadPool::THREADPOOL_SHUTDOWN:
+            case thread_pool::THREADPOOL_SHUTDOWN:
                 write_message("thread pool is shutdown");
                 break;
-            case ThreadPool::THREADPOOL_GRACEFUL:
+            case thread_pool::THREADPOOL_GRACEFUL:
                 write_message("thread pool is graceful shutdown");
                 break;
-            case ThreadPool::THREADPOOL_THREAD_FAILURE:
+            case thread_pool::THREADPOOL_THREAD_FAILURE:
                 write_message("thread fail");
                 break;
-            case ThreadPool::THREADPOOL_QUEUE_FULL:
+            case thread_pool::THREADPOOL_QUEUE_FULL:
                 write_message("task queue is full");
                 break;
             default:
@@ -141,7 +141,7 @@ private:
     }
 
 private:
-    ThreadPool::ErrorType error_type_;
+    thread_pool::ErrorType error_type_;
     const char* filename_;
     int line_num_;
     char message_[1024];

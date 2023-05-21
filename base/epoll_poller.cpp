@@ -5,8 +5,16 @@
 static const int init_event_list_size = 16;
 static const int epoll_timeout = 10000;
 
+EpollPoller* EpollPoller::instance_ = nullptr;
+EpollPoller* EpollPoller::get_instance() {
+    if (instance_ == nullptr) {
+        instance_ = new EpollPoller();
+    }
+    return instance_;
+}
+
 EpollPoller::EpollPoller() : epoll_event_list_(init_event_list_size),
-                             epoll_fd_(-1) {
+                             epoll_fd_(-1){
     epoll_fd_ = epoll_create1(EPOLL_CLOEXEC);
     if (epoll_fd_ < 0) {
         printf("epoll fd create error \n");

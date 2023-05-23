@@ -12,8 +12,14 @@
 2. Acceptor模块: 与Main Reactor处于同一线程,负责处理连接事件, 并将新连接加入Sub Reactor进行监听
 3. EventHandler模块: 负责解析由Sub Reactor分发的请求, 将事务交由线程池处理
 
-## 重要组成
-- []
+## 重要模块
+
+- [Main Reactor](./docs/MainReactor.md)
+
+
+
+## 技术点
+
 - [线程池](./docs/ThreadPool.md)
 - [网络连接模块](./docs/NetConnection.md)
 - 内存池

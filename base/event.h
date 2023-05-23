@@ -100,4 +100,10 @@ private:
     EventCallback error_callback_;
 };
 
+class TriggerEvent : public Event {
+public:
+    TriggerEvent();
+    ~TriggerEvent();
+};
+
 #endif

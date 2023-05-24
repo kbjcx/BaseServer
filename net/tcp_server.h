@@ -12,7 +12,7 @@
  */
 class TcpServer {
 public:
-    ~TcpServer();
+     virtual ~TcpServer();
     
     void start();
     static void new_connection_callback(void*, int);
@@ -21,7 +21,7 @@ public:
     virtual void handle_disconnection() = 0;
     
 protected:
-    TcpServer(const Ipv4Address& ipv_4_address);
+    explicit TcpServer(const Ipv4Address& ipv_4_address);
     
 private:
     Ipv4Address ipv_4_address_;

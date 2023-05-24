@@ -9,6 +9,13 @@ TcpServer::TcpServer(const Ipv4Address& ipv_4_address)
     acceptor_ = Acceptor::get_instance();
 }
 
+TcpServer::~TcpServer() {
+    if (acceptor_ != nullptr) {
+        delete acceptor_;
+        acceptor_ = nullptr;
+    }
+}
+
 void TcpServer::start() {
     // TODO 异常处理
     int server_fd = socket(PF_INET,

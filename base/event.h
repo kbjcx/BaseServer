@@ -104,6 +104,10 @@ class TriggerEvent : public Event {
 public:
     TriggerEvent();
     ~TriggerEvent();
+    
+    using DisconnectionCallback = void(*)()
+    
+    void set_disconnection_callback();
 };
 
 #endif

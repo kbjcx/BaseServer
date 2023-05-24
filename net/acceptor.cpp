@@ -12,8 +12,10 @@ Acceptor* Acceptor::get_instance() {
 }
 
 Acceptor::Acceptor() : callback_(nullptr), tcp_server_(nullptr),
-listening_(false), server_fd_(-1), new_connection_event_(nullptr) {
-
+listening_(false), server_fd_(-1), new_connection_event_(nullptr),
+new_connection_event_handler_(nullptr) {
+    new_connection_event_ = new IOEvent(server_fd_, this);
+    new_connection_event_handler_ = new EventHandler();
 }
 
 Acceptor::~Acceptor() {
@@ -38,11 +40,11 @@ int Acceptor::listen() {
     if (server_fd_ == -1) {
         // TODO 处理异常
     }
-    new_connection_event_ = new IOEvent(server_fd_, this);
     new_connection_event_->enable_read();
     // 设置接收新连接的回调
     new_connection_event_->set_read_callback(accept_callback);
-    // TODO 将事件加入事件处理器
+    new_connection_event_handler_->add_io_event(new_connection_event_);
+    // TODO event_handler还未启动事件循环
 }
 
 void Acceptor::accept_callback(void* arg) {

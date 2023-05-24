@@ -2,6 +2,7 @@
 #define BASESERVER_NET_ACCEPTOR_H_
 
 #include "event.h"
+#include "event_handler.h"
 
 
 /*
@@ -37,6 +38,7 @@ private:
     bool listening_;
     int server_fd_;
     IOEvent* new_connection_event_;
+    EventHandler* new_connection_event_handler_;
 };
 
 #endif //BASESERVER_NET_ACCEPTOR_H_

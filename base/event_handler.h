@@ -1,7 +1,10 @@
 #ifndef BASESERVER_BASE_EVENTHANDLER_H_
 #define BASESERVER_BASE_EVENTHANDLER_H_
 
+#include <vector>
+
 #include "event.h"
+#include "epoll_poller.h"
 
 /*
  * 用于处理各种事件
@@ -22,6 +25,12 @@ public:
     
     void event_loop();
     
+    void handle_trigger_events();
+//    void handle_io_events();
+    
+private:
+    EpollPoller* poller_;
+    std::vector<TriggerEvent*> trigger_event_list_;
 };
 
 #endif

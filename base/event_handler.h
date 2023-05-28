@@ -29,6 +29,7 @@ public:
 //    void handle_io_events();
     
 private:
+    bool quit_;
     EpollPoller* poller_;
     std::vector<TriggerEvent*> trigger_event_list_;
 };

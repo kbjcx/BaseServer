@@ -105,9 +105,16 @@ public:
     TriggerEvent();
     ~TriggerEvent();
     
-    using DisconnectionCallback = void(*)()
+    using DisconnectionCallback = void(*)(void*);
     
-    void set_disconnection_callback();
+    void set_disconnection_callback(DisconnectionCallback cb, void* arg) {
+        disconnection_callback_ = cb;
+        arg_ = arg;
+    }
+    
+private:
+    DisconnectionCallback disconnection_callback_;
+    void* arg_;
 };
 
 #endif

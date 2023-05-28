@@ -1,7 +1,8 @@
 #include "event_handler.h"
 
-EventHandler::EventHandler() : poller_(nullptr), trigger_event_list_{} {
-
+EventHandler::EventHandler() : poller_(nullptr), trigger_event_list_{},
+                               quit_(false) {
+    poller_ = new EpollPoller();
 }
 
 EventHandler::~EventHandler() {
@@ -28,8 +29,10 @@ int EventHandler::add_trigger_event(TriggerEvent* event) {
 }
 
 void EventHandler::event_loop() {
-    handle_trigger_events();
-    poller_->handle_event();
+    while (!quit_) {
+        handle_trigger_events();
+        poller_->handle_event();
+    }
 }
 
 void EventHandler::handle_trigger_events() {

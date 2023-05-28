@@ -12,20 +12,24 @@ Acceptor* Acceptor::get_instance() {
 }
 
 Acceptor::Acceptor() : callback_(nullptr), tcp_server_(nullptr),
-listening_(false), server_fd_(-1), new_connection_event_(nullptr),
-new_connection_event_handler_(nullptr) {
-    new_connection_event_ = new IOEvent(server_fd_, this);
-    new_connection_event_handler_ = new EventHandler();
+                       listening_(false), server_fd_(-1), accept_event_(nullptr),
+                       main_reactor_(nullptr) {
+    accept_event_ = new IOEvent(server_fd_, this);
 }
 
 Acceptor::~Acceptor() {
     if (listening_) {
-    
+        delete accept_event_;
+        // TODO 利用智能指针管理
     }
 }
 
 void Acceptor::set_fd(int fd) {
     server_fd_ = fd;
+}
+
+void Acceptor::set_main_reactor(EventHandler* main_reactor) {
+    main_reactor_ = main_reactor;
 }
 
 void Acceptor::set_new_connection_callback(Acceptor::NewConnectionCallback cb,
@@ -40,11 +44,12 @@ int Acceptor::listen() {
     if (server_fd_ == -1) {
         // TODO 处理异常
     }
-    new_connection_event_->enable_read();
+    accept_event_->enable_read();
     // 设置接收新连接的回调
-    new_connection_event_->set_read_callback(accept_callback);
-    new_connection_event_handler_->add_io_event(new_connection_event_);
-    // TODO event_handler还未启动事件循环
+    accept_event_->set_read_callback(accept_callback);
+    main_reactor_->add_io_event(accept_event_);
+    // TODO event_handler启动事件循环的顺序, 要在Subreactor创建之后
+    main_reactor_->event_loop();
 }
 
 void Acceptor::accept_callback(void* arg) {

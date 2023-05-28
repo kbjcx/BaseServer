@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "thread.h"
+#include "event_handler.h"
 
 #define
 
@@ -15,9 +16,12 @@ const int MAX_TASK_QUEUE = 65535;
 class ThreadTask {
 public:
     using task_func_t = void (*)(void*);
+    using event_loop_t = void (EventHandler::*)();
     
 public:
-    ThreadTask() = default;
+    ThreadTask() : task_callback_(nullptr), event_loop_callback_(nullptr) {
+    
+    }
     ~ThreadTask() = default;
     
     void set_task(task_func_t task_callback, void* arg) {
@@ -25,19 +29,28 @@ public:
         arg_ = arg;
     }
     
+    void set_task(event_loop_t event_loop_callback, void* arg) {
+        event_loop_callback_ = event_loop_callback;
+        arg_ = arg;
+    }
+    
     void handle() {
         if (task_callback_ != nullptr) {
             task_callback_(arg_);
+        }
+        if (event_loop_callback_ != nullptr) {
+            ((EventHandler*)arg_->*event_loop_callback_)();
         }
     }
     
 private:
     void* arg_;
     task_func_t task_callback_;
+    event_loop_t event_loop_callback_;
 };
 
 
-class thread_pool {
+class ThreadPool {
 public:
     enum ShutdownType {
         IMMEDIATE_SHUTDOWN = 1,
@@ -53,8 +66,8 @@ public:
         THREADPOOL_GRACEFUL = 1
     };
     
-    thread_pool(int num_workers, int max_jobs);
-    ~thread_pool();
+    ThreadPool(int num_workers, int max_jobs);
+    ~ThreadPool();
     
     void add_task(ThreadTask* task);
     
@@ -100,7 +113,7 @@ private:
 
 class ThreadPoolException : public std::exception {
 public:
-    ThreadPoolException(thread_pool::ErrorType error_type,
+    ThreadPoolException(ThreadPool::ErrorType error_type,
                         const char* filename,
                         int line_num)
     : error_type_(error_type),
@@ -108,22 +121,22 @@ public:
       filename_(filename),
       message_() {
         switch (error_type_) {
-            case thread_pool::THREADPOOL_LOCK_FAILURE:
+            case ThreadPool::THREADPOOL_LOCK_FAILURE:
                 write_message("thread pool mutex or cond error");
                 break;
-            case thread_pool::THREADPOOL_INVALID:
+            case ThreadPool::THREADPOOL_INVALID:
                 write_message("thread pool is invalid");
                 break;
-            case thread_pool::THREADPOOL_SHUTDOWN:
+            case ThreadPool::THREADPOOL_SHUTDOWN:
                 write_message("thread pool is shutdown");
                 break;
-            case thread_pool::THREADPOOL_GRACEFUL:
+            case ThreadPool::THREADPOOL_GRACEFUL:
                 write_message("thread pool is graceful shutdown");
                 break;
-            case thread_pool::THREADPOOL_THREAD_FAILURE:
+            case ThreadPool::THREADPOOL_THREAD_FAILURE:
                 write_message("thread fail");
                 break;
-            case thread_pool::THREADPOOL_QUEUE_FULL:
+            case ThreadPool::THREADPOOL_QUEUE_FULL:
                 write_message("task queue is full");
                 break;
             default:
@@ -141,7 +154,7 @@ private:
     }
 
 private:
-    thread_pool::ErrorType error_type_;
+    ThreadPool::ErrorType error_type_;
     const char* filename_;
     int line_num_;
     char message_[1024];

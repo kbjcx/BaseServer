@@ -7,7 +7,7 @@
 
 class EpollPoller : public Poller {
 public:
-    static EpollPoller* get_instance();
+    EpollPoller();
     ~EpollPoller() override;
     
     bool add_io_event(IOEvent *io_event) override;
@@ -16,15 +16,11 @@ public:
     
     void handle_event() override;
     
-protected:
-    EpollPoller();
-    
 private:
     int epoll_fd_;
     using EpollEventList = std::vector<epoll_event>;
     EpollEventList epoll_event_list_;
     std::vector<IOEvent*> io_event_list_;
-    static EpollPoller* instance_;
 };
 
 #endif

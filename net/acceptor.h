@@ -25,6 +25,7 @@ public:
     int listen();
     void set_new_connection_callback(NewConnectionCallback cb, void* arg);
     void set_fd(int fd);
+    void set_main_reactor(EventHandler* main_reactor);
     
     static void accept_callback(void*);
     void handle_accept();
@@ -37,8 +38,8 @@ private:
     void* tcp_server_;
     bool listening_;
     int server_fd_;
-    IOEvent* new_connection_event_;
-    EventHandler* new_connection_event_handler_;
+    IOEvent* accept_event_;
+    EventHandler* main_reactor_;
 };
 
 #endif //BASESERVER_NET_ACCEPTOR_H_

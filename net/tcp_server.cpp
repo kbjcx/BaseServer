@@ -12,7 +12,7 @@ TcpServer::TcpServer(const Ipv4Address& ipv_4_address)
 }
 
 TcpServer::~TcpServer() {
-    if (is_start_ == true) {
+    if (is_start_) {
         delete acceptor_;
         acceptor_ = nullptr;
         delete main_reactor_;
@@ -25,7 +25,7 @@ TcpServer::~TcpServer() {
 void TcpServer::start() {
     main_reactor_ = new EventHandler();
     // TODO 根据核心数设置Subreactor数量
-    sub_reactors_ = new ConnectionHandler(4);
+    sub_reactors_ = new ConnectionHandler(this, 4);
     acceptor_ = Acceptor::get_instance();
     acceptor_->set_main_reactor(main_reactor_);
     // TODO 异常处理

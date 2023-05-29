@@ -26,10 +26,12 @@ public:
 protected:
     explicit TcpServer(const Ipv4Address& ipv_4_address);
     
+public:
+    EventHandler* main_reactor_;
+    
 protected:
     ConnectionHandler* sub_reactors_;
     std::unordered_map<int, TcpConnection*> connections_map_;
-    EventHandler* main_reactor_;
     
 private:
     bool is_start_;

@@ -3,14 +3,16 @@
 
 #include "ThreadPool.h"
 #include "tcp_connection.h"
+#include "tcp_server.h"
 
 /*
  * SubReactor集合, 用于处理连接事件, 每个SubReactor工作于子线程, 创建一个简单的线程池
  * 用于处理请求读写事件
  */
+class TcpServer;
 class ConnectionHandler {
 public:
-    ConnectionHandler(int num);
+    ConnectionHandler(TcpServer* server, int num);
     ~ConnectionHandler();
     
     static void disconnection_callback(void*);
@@ -22,6 +24,7 @@ private:
     void handle_disconnection_list();
     
 private:
+    TcpServer* server_;
     ThreadPool* thread_pool_;
     std::vector<EventHandler*> sub_reactors_;
     std::vector<TcpConnection*> disconnection_list_;

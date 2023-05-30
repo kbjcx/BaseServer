@@ -12,6 +12,7 @@
  * 触发事件: 添加存储触发事件等待统一处理
  * 每个SubReactor都有一个EventHandler
  */
+class TriggerEvent;
 class EventHandler {
 public:
     EventHandler();

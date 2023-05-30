@@ -34,6 +34,7 @@ void TcpServer::start() {
     int ret = bind(server_fd, ipv_4_address_.get_addr(), sizeof(sockaddr_in));
     acceptor_->set_fd(server_fd);
     acceptor_->set_new_connection_callback(new_connection_callback, this);
+    acceptor_->listen();
 }
 
 void TcpServer::new_connection_callback(void* arg, int fd) {

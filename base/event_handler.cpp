@@ -30,7 +30,8 @@ int EventHandler::add_trigger_event(TriggerEvent* event) {
 
 void EventHandler::event_loop() {
     while (!quit_) {
-        handle_trigger_events();
+        printf("handle events \n");
+//        handle_trigger_events();
         poller_->handle_event();
     }
 }

@@ -12,6 +12,7 @@
  * 根据不同使用需求,创建派生类来处理不同的连接与断开连接处理
  * 创建服务时将socket交给Accpetor处理新链接任务
  */
+class ConnectionHandler;
 class TcpServer {
 public:
      virtual ~TcpServer();

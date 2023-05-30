@@ -102,8 +102,8 @@ private:
 
 class TriggerEvent : public Event {
 public:
-    TriggerEvent();
-    ~TriggerEvent();
+    TriggerEvent() = default;
+    ~TriggerEvent() = default;
     
     using DisconnectionCallback = void(*)(void*);
     

@@ -5,7 +5,11 @@
 
 class HttpConnection : public TcpConnection {
 public:
-    HttpConnection(int fd);
+    explicit HttpConnection(int fd);
     ~HttpConnection();
+    
+    void handle_read() override;
+    void handle_write() override;
+    void handle_error() override;
 };
 #endif //BASESERVER_NET_HTTP_CONNECTION_H_

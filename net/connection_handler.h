@@ -24,6 +24,7 @@ private:
     void handle_disconnection_list();
     
 private:
+    int index_;
     TcpServer* server_;
     ThreadPool* thread_pool_;
     std::vector<EventHandler*> sub_reactors_;

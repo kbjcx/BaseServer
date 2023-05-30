@@ -41,7 +41,7 @@ private:
     static void error_callback(void* arg);
     
 protected:
-    TcpConnection(int fd);
+    explicit TcpConnection(int fd);
     ~TcpConnection() = default;
     
 private:

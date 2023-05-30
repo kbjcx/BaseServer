@@ -2,7 +2,7 @@
 
 ConnectionHandler::ConnectionHandler(TcpServer* server, int num) :
         thread_pool_(nullptr), sub_reactors_(num), disconnection_list_(),
-        trigger_event_(nullptr), server_(server) {
+        trigger_event_(nullptr), server_(server), index_(0) {
     thread_pool_ = new ThreadPool(num, 1024);
     for (int i = 0; i < num; ++i) {
         sub_reactors_[i] = new EventHandler();
@@ -21,7 +21,8 @@ ConnectionHandler::~ConnectionHandler() {
 
 void ConnectionHandler::add_connection(TcpConnection* tcp_connection) {
     // TODO 按照一定的策略分配给subreactor,并将subreactor注册到connection中
-    
+    tcp_connection->set_sub_reactor(sub_reactors_[index_]);
+    index_ = index_ == 7 ? 0 : index_ + 1;
 }
 
 void ConnectionHandler::handle_disconnection(TcpConnection* tcp_connection) {

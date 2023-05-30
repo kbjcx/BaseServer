@@ -8,8 +8,6 @@
 #include "thread.h"
 #include "event_handler.h"
 
-#define
-
 const int MAX_THREADS = 1024;
 const int MAX_TASK_QUEUE = 65535;
 
@@ -17,11 +15,13 @@ class ThreadTask {
 public:
     using task_func_t = void (*)(void*);
     using event_loop_t = void (EventHandler::*)();
-    
+
 public:
-    ThreadTask() : task_callback_(nullptr), event_loop_callback_(nullptr) {
-    
+    ThreadTask() : task_callback_(nullptr), event_loop_callback_(nullptr),
+                   arg_(nullptr) {
+        
     }
+    
     ~ThreadTask() = default;
     
     void set_task(task_func_t task_callback, void* arg) {
@@ -39,16 +39,15 @@ public:
             task_callback_(arg_);
         }
         if (event_loop_callback_ != nullptr) {
-            ((EventHandler*)arg_->*event_loop_callback_)();
+            ((EventHandler*) arg_->*event_loop_callback_)();
         }
     }
-    
+
 private:
     void* arg_;
     task_func_t task_callback_;
     event_loop_t event_loop_callback_;
 };
-
 
 class ThreadPool {
 public:
@@ -86,18 +85,18 @@ public:
     int get_idle_thread_count() const {
         return idle_thread_count_;
     }
-    
+
 private:
     class Thread_ : public Thread {
     protected:
         void run(void*) override;
     };
-    
+
 private:
     void create_threads();
     void cancel_threads();
     void handle_task();
-    
+
 private:
     std::vector<Thread_> thread_list_;
     std::list<ThreadTask*> task_list_;
@@ -110,16 +109,15 @@ private:
     bool quit_;
 };
 
-
 class ThreadPoolException : public std::exception {
 public:
     ThreadPoolException(ThreadPool::ErrorType error_type,
                         const char* filename,
                         int line_num)
-    : error_type_(error_type),
-      line_num_(line_num),
-      filename_(filename),
-      message_() {
+            : error_type_(error_type),
+              line_num_(line_num),
+              filename_(filename),
+              message_() {
         switch (error_type_) {
             case ThreadPool::THREADPOOL_LOCK_FAILURE:
                 write_message("thread pool mutex or cond error");
@@ -139,14 +137,14 @@ public:
             case ThreadPool::THREADPOOL_QUEUE_FULL:
                 write_message("task queue is full");
                 break;
-            default:
-                write_message("undefined error in thread pool");
+            default:write_message("undefined error in thread pool");
         }
     }
     
     const char* what() const noexcept override {
         return message_;
     }
+
 private:
     void write_message(const char* msg) {
         sprintf(message_, "%s filename: %s line number: %d \n",

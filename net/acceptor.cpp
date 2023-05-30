@@ -39,6 +39,7 @@ void Acceptor::set_new_connection_callback(Acceptor::NewConnectionCallback cb,
 }
 
 int Acceptor::listen() {
+    printf("start listening \n");
     listening_ = true;
     ::listen(server_fd_, 1024);
     if (server_fd_ == -1) {
@@ -53,11 +54,13 @@ int Acceptor::listen() {
 }
 
 void Acceptor::accept_callback(void* arg) {
+    printf("new connection \n");
     auto* acceptor = (Acceptor*) arg;
     acceptor->handle_accept();
 }
 
 void Acceptor::handle_accept() {
+    printf("new connection \n");
     sockaddr_in client_addr{};
     memset(&client_addr, 0, sizeof(sockaddr_in));
     socklen_t len;

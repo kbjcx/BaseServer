@@ -14,7 +14,7 @@ Acceptor* Acceptor::get_instance() {
 Acceptor::Acceptor() : callback_(nullptr), tcp_server_(nullptr),
                        listening_(false), server_fd_(-1), accept_event_(nullptr),
                        main_reactor_(nullptr) {
-    accept_event_ = new IOEvent(server_fd_, this);
+    
 }
 
 Acceptor::~Acceptor() {
@@ -45,6 +45,7 @@ int Acceptor::listen() {
     if (server_fd_ == -1) {
         // TODO 处理异常
     }
+    accept_event_ = new IOEvent(server_fd_, this);
     accept_event_->enable_read();
     // 设置接收新连接的回调
     accept_event_->set_read_callback(accept_callback);
@@ -54,13 +55,11 @@ int Acceptor::listen() {
 }
 
 void Acceptor::accept_callback(void* arg) {
-    printf("new connection \n");
     auto* acceptor = (Acceptor*) arg;
     acceptor->handle_accept();
 }
 
 void Acceptor::handle_accept() {
-    printf("new connection \n");
     sockaddr_in client_addr{};
     memset(&client_addr, 0, sizeof(sockaddr_in));
     socklen_t len;

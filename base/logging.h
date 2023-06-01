@@ -3,33 +3,46 @@
 
 #include <string>
 
+#define debug(format, ...) \
+    Logger::instance()->log(Logger::LOG_DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
+
 class Logger {
 public:
     enum LogLevel {
-        LogError,
-        LogWarning,
-        LogDebug
+        LOG_NONE = -2, // 所有级别都不打印
+        LOG_ALL = -1, // 所有级别都打印
+        LOG_PANIC = 0,
+        LOG_ERROR,
+        LOG_WARNING,
+        LOG_INFO,
+        LOG_DEBUG,
+        LOG_COUNT // 代表有多少个级别的日志等级
     };
+    static Logger* instance();
     
-    Logger();
-    ~Logger();
-    
-    static void set_log_file(std::string file);
-    static std::string get_log_file();
-    static void set_log_level(LogLevel level);
-    static LogLevel get_log_level();
-    
-    void write(LogLevel level, const char* file, const char* func,
-               int line, const char* format, ...);
+    static void log(LogLevel log_level, const char* file, int line,
+                    const char* format, ...);
+    // 重定向日志到文件
+    // void redirect(std::FILE* file, LogLevel log_level = LogLevel::LOG_ALL);
+    // 设置日志级别
+    void set_level(LogLevel log_level);
+    void open(const char* filename);
+    void close();
+    void max(int bytes);
     
 private:
-    char data_[4096];
-    char* cur_ptr_;
-    LogLevel this_log_level_;
+    Logger();
+    ~Logger();
+    void rotate();
     
-    static LogLevel log_level_;
-    static std::string log_file_;
-    static bool is_stdout_;
+private:
+    static Logger* instance_;
+    LogLevel log_level_;
+    std::FILE* file_;
+    std::string filename_;
+    int max_;
+    int len_;
+    static const char* s_level[LOG_COUNT];
 };
 
 #endif

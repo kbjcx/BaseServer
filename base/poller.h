@@ -2,7 +2,7 @@
     #define BASE_SERVER_BASE_POLLER_H_
 
 #include "event.h"
-#include <unordered_map>
+#include <map>
 
 class Poller {
 public:
@@ -18,7 +18,7 @@ protected:
     Poller() = default;
     
 protected:
-    using IOEventMap = std::unordered_map<int, IOEvent*>;
+    using IOEventMap = std::map<int, IOEvent*>;
     IOEventMap io_event_map_;
 };
 

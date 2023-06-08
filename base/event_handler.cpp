@@ -1,8 +1,13 @@
 #include "event_handler.h"
 
-EventHandler::EventHandler() : poller_(nullptr), trigger_event_list_{},
-                               quit_(false) {
-    poller_ = new EpollPoller();
+#include <utility>
+
+
+EventHandler::EventHandler(std::string poller_mode)
+        : poller_(nullptr), trigger_event_list_{},
+          quit_(false), poller_factory_(nullptr) {
+    poller_factory_ = PollerFactory::get_instance();
+    poller_ = poller_factory_->create_poller(poller_mode);
 }
 
 EventHandler::~EventHandler() {
@@ -10,6 +15,7 @@ EventHandler::~EventHandler() {
         delete poller_;
         poller_ = nullptr;
     }
+    
 }
 
 int EventHandler::add_io_event(IOEvent* event) {

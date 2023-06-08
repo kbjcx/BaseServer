@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "event.h"
-#include "epoll_poller.h"
+#include "poller_factory.h"
 
 /*
  * 用于处理各种事件
@@ -15,7 +15,7 @@
 class TriggerEvent;
 class EventHandler {
 public:
-    EventHandler();
+    explicit EventHandler(std::string poller_mode);
     ~EventHandler();
     
     int add_io_event(IOEvent* event);
@@ -31,7 +31,8 @@ public:
     
 private:
     bool quit_;
-    EpollPoller* poller_;
+    Poller* poller_;
+    PollerFactory* poller_factory_;
     std::vector<TriggerEvent*> trigger_event_list_;
 };
 

@@ -8,7 +8,7 @@
 class SelectPoller : public Poller {
 public:
     SelectPoller();
-    ~SelectPoller();
+    ~SelectPoller() override;
     
     bool add_io_event(IOEvent *io_event) override;
     bool update_io_event(IOEvent *io_event) override;

@@ -3,12 +3,13 @@
 
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include "poller.h"
 #include "poll.h"
 
 class PollPoller : public Poller {
 public:
-    virtual ~PollPoller();
+    ~PollPoller() override;
     PollPoller();
     
     bool add_io_event(IOEvent *io_event) override;

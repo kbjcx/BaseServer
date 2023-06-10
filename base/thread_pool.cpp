@@ -1,5 +1,5 @@
 #include <cstdio>
-#include "ThreadPool.h"
+#include "thread_pool.h"
 
 ThreadPool::ThreadPool(int num_workers, int max_tasks)
         : thread_list_(num_workers),
@@ -30,6 +30,7 @@ ThreadPool::~ThreadPool() {
 void ThreadPool::add_task(ThreadTask* task) {
     pthread_mutex_lock(&mutex_);
     task_list_.push_back(task);
+//    printf("task counts %zu \n", task_list_.size());
     pthread_cond_signal(&cond_);
     pthread_mutex_unlock(&mutex_);
 }

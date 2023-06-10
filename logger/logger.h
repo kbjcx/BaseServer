@@ -5,26 +5,26 @@
 
 class Logger;
 #define EXPORT_ERROR_LOG(format, ...) \
-if (Logger::LOG_ERROR <= Logger::get_log_level()) \
-    Logger().write(Logger::LOG_ERROR, __FILE__, __FUNCTION__, __LINE__, \
-                   format, ##__VA_ARGS__)
+    if (Logger::LOG_ERROR <= Logger::get_log_level()) \
+        Logger().write(Logger::LOG_ERROR, __FILE__, __FUNCTION__, __LINE__, \
+            format, ##__VA_ARGS__)
 
 #define EXPORT_DEBUG_LOG(format, ...) \
-if (Logger::LOG_DEBUG <= Logger::get_log_level()) \
-    Logger().write(Logger::LOG_DEBUG, __FILE__, __FUNCTION__, __LINE__, \
-                   format, ##__VA_ARGS__)
+    if (Logger::LOG_DEBUG <= Logger::get_log_level()) \
+        Logger().write(Logger::LOG_DEBUG, __FILE__, __FUNCTION__, __LINE__, \
+            format, ##__VA_ARGS__)
 
 #define EXPORT_WARNING_LOG(format, ...) \
-if (Logger::LOG_WARNING <= Logger::get_log_level()) \
-    Logger().write(Logger::LOG_WARNING, __FILE__, __FUNCTION__, __LINE__, \
-                   format, ##__VA_ARGS__)
+    if (Logger::LOG_WARNING <= Logger::get_log_level()) \
+        Logger().write(Logger::LOG_WARNING, __FILE__, __FUNCTION__, __LINE__, \
+            format, ##__VA_ARGS__)
 
 class Logger {
 public:
     enum LogLevel {
         LOG_ERROR = 0,
-        LOG_WARNING,
-        LOG_DEBUG
+        LOG_DEBUG,
+        LOG_WARNING
     };
     
     Logger();

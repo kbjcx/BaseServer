@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <cstring>
 #include <cstdarg>
+#include "async_logger.h"
 
 Logger::LogLevel Logger::log_level_ = Logger::LOG_DEBUG;
 
@@ -18,7 +19,7 @@ Logger::~Logger() {
         printf("%s \n", data_);
     }
     else {
-        // TODO 交给异步日志处理
+        AsyncLogger::get_instance()->append(data_, (int)(cur_ptr_ - data_));
     }
 }
 

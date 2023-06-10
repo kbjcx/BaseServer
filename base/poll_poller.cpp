@@ -137,3 +137,5 @@ void PollPoller::handle_event() {
         
     }
 }
+
+PollPoller::~PollPoller() = default;

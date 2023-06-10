@@ -46,7 +46,7 @@ public:
     
 private:
     enum {
-        BUFFER_SIZE = 1024*1024;
+        BUFFER_SIZE = 1024*1024
     };
     
     const char* end() const {
@@ -60,19 +60,19 @@ private:
 
 class AsyncLogger : public Thread {
 public:
-    virtual ~AsyncLogger();
+    ~AsyncLogger() override;
     
     static AsyncLogger* get_instance();
     
     void append(const char* log_line, int len);
     
 protected:
-    AsyncLogger(std::string file);
-    virtual void run(void* arg);
+    explicit AsyncLogger(std::string file);
+    void run(void* arg) override;
     
 private:
     enum {
-        BUFFER_NUM = 4;
+        BUFFER_NUM = 4
     };
     
     static AsyncLogger* instance_;

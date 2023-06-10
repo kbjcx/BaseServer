@@ -27,7 +27,7 @@ public:
         return event_;
     }
     
-    int set_return_event(int event) {
+    void set_return_event(int event) {
         return_event_ = event;
     }
     

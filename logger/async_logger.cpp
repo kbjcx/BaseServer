@@ -32,7 +32,7 @@ AsyncLogger::AsyncLogger(std::string file)
     start(nullptr);
 }
 
-AsyncLogger::~AsyncLogger() noexcept {
+AsyncLogger::~AsyncLogger() {
     while (!flush_buffers_.empty()) {
         LogBuffer* buffer = flush_buffers_.front();
         fwrite(buffer->data(), 1, buffer->length(), file_fd);
@@ -47,7 +47,7 @@ AsyncLogger::~AsyncLogger() noexcept {
     
     run_ = false;
     
-    // 释放所有阻塞线程
+    // 释放所有等待写的日志写入
     cond_->broadcast();
     
     delete mutex_;
@@ -68,12 +68,14 @@ void AsyncLogger::append(const char* log_line, int len) {
         flush_buffers_.push(cur_buffer_);
         
         while (free_buffers_.empty()) {
+            // 通知写出线程将已有buffer写入文件
             cond_->signal();
             cond_->wait(mutex_);
         }
         
         cur_buffer_ = free_buffers_.front();
         cur_buffer_->append(log_line, len);
+        // 通知其他线程可写
         cond_->signal();
     }
 }
@@ -82,7 +84,7 @@ void AsyncLogger::run(void* arg) {
     while (run_) {
         MutexLockGuard lock_guard(mutex_);
         bool ret = cond_->wait_timeout(mutex_, 3000);
-        if (run_ == false) break;
+        if (!run_) break;
         
         if (ret) {
             bool empty = free_buffers_.empty();
@@ -95,6 +97,8 @@ void AsyncLogger::run(void* arg) {
                 free_buffers_.push(buffer);
                 fflush(file_fd);
             }
+            
+            // 当free为空时说明写入日志在wait，需要唤醒
             if (empty) cond_->signal();
         }
         else {

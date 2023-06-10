@@ -1,6 +1,7 @@
 #include "poller_factory.h"
+#include "new.h"
 
-PollerFactory* PollerFactory::instance_ = new PollerFactory();
+PollerFactory* PollerFactory::instance_ = NEW(PollerFactory)();
 PollerFactory::GC PollerFactory::gc_ = PollerFactory::GC();
 
 PollerFactory::PollerFactory() = default;

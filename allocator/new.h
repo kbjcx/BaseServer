@@ -6,8 +6,8 @@
 template <class T>
 class New;
 class Delete;
-#define NEW New::allocate
-#define DELETE Delete::release
+#define NEW(type) New<type>::allocate
+#define DELETE(ptr) Delete::release(ptr)
 
 template <class T>
 class New {

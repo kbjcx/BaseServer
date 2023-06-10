@@ -6,7 +6,7 @@
 #include <cstdarg>
 
 Logger::LogLevel Logger::log_level_ = Logger::LOG_DEBUG;
-std::string Logger::log_file_ = "/dev/stdout";
+
 bool Logger::is_stdout_ = true;
 
 Logger::Logger() : data_(), cur_ptr_(data_), this_log_level_(LOG_DEBUG) {
@@ -20,20 +20,6 @@ Logger::~Logger() {
     else {
         // TODO 交给异步日志处理
     }
-}
-
-void Logger::set_log_file(std::string file) {
-    log_file_ = std::move(file);
-    if (log_file_ == "/dev/stdout") {
-        is_stdout_ = true;
-    }
-    else {
-        is_stdout_ = false;
-    }
-}
-
-std::string Logger::get_log_file() {
-    return log_file_;
 }
 
 void Logger::set_log_level(Logger::LogLevel log_level) {
@@ -96,4 +82,12 @@ void Logger::write(Logger::LogLevel log_level,
     
     va_end(format_args);
     cur_ptr_ += strlen(cur_ptr_);
+}
+
+void Logger::output2stdout() {
+    is_stdout_ = true;
+}
+
+void Logger::output2file() {
+    is_stdout_ = false;
 }

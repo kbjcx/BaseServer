@@ -30,10 +30,11 @@ public:
     Logger();
     ~Logger();
     
-    static void set_log_file(std::string file);
-    static std::string get_log_file();
     static void set_log_level(LogLevel log_level);
     static LogLevel get_log_level();
+    
+    static void output2stdout();
+    static void output2file();
     
     void write(LogLevel log_level, const char* file, const char* function,
                int line, const char* format, ...);
@@ -44,7 +45,7 @@ private:
     LogLevel this_log_level_;
     
     static LogLevel log_level_;
-    static std::string log_file_;
+
     static bool is_stdout_;
 };
 

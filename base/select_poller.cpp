@@ -1,7 +1,13 @@
 #include "select_poller.h"
+#include "new.h"
+#include "event.h"
 
 
 static const int SELECT_TIMEOUT = 10000;
+
+SelectPoller* SelectPoller::new_instance() {
+    return New<SelectPoller>::allocate();
+}
 
 SelectPoller::SelectPoller() : max_num_sockets_(0) {
     // 清空文件描述符集合

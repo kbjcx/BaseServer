@@ -1,4 +1,5 @@
 #include "http_server.h"
+#include "http_connection.h"
 
 HttpServer::HttpServer(const Ipv4Address& ipv_4_address) :
         TcpServer(ipv_4_address) {

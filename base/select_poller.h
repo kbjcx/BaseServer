@@ -1,12 +1,13 @@
 #ifndef BASESERVER_BASE_SELECTPOLLER_H_
 #define BASESERVER_BASE_SELECTPOLLER_H_
 
+#include <sys/select.h>
+#include <vector>
 #include "poller.h"
-#include "sys/select.h"
-#include "vector"
 
 class SelectPoller : public Poller {
 public:
+    static SelectPoller* new_instance();
     SelectPoller();
     ~SelectPoller() override;
     

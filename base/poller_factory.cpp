@@ -1,7 +1,9 @@
 #include "poller_factory.h"
-#include "new.h"
+#include "epoll_poller.h"
+#include "poll_poller.h"
+#include "select_poller.h"
 
-PollerFactory* PollerFactory::instance_ = NEW(PollerFactory)();
+PollerFactory* PollerFactory::instance_ = new PollerFactory();
 PollerFactory::GC PollerFactory::gc_ = PollerFactory::GC();
 
 PollerFactory::PollerFactory() = default;
@@ -10,13 +12,13 @@ PollerFactory::~PollerFactory() = default;
 
 Poller* PollerFactory::create_poller(const std::string& mode) {
     if (mode == "poll") {
-        return new PollPoller();
+        return PollPoller::new_instance();
     }
     else if (mode == "epoll") {
-        return new EpollPoller();
+        return EpollPoller::new_instance();
     }
     else if (mode == "select") {
-        return nullptr;
+        return SelectPoller::new_instance();
     }
     else {
         // 错误
@@ -24,6 +26,6 @@ Poller* PollerFactory::create_poller(const std::string& mode) {
     }
 }
 
-PollerFactory* PollerFactory::get_instance() {
+PollerFactory* PollerFactory::instance() {
     return instance_;
 }

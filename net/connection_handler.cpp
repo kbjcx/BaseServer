@@ -1,11 +1,16 @@
 #include "connection_handler.h"
+#include "event_handler.h"
+#include "event.h"
+#include "thread_pool.h"
+#include "tcp_connection.h"
+#include "tcp_server.h"
 
 ConnectionHandler::ConnectionHandler(TcpServer* server, int num) :
         thread_pool_(nullptr), sub_reactors_(num), disconnection_list_(),
         trigger_event_(nullptr), server_(server), index_(0) {
     thread_pool_ = new ThreadPool(num, 1024);
     for (int i = 0; i < num; ++i) {
-        sub_reactors_[i] = new EventHandler();
+        sub_reactors_[i] = new EventHandler("select");
         auto thread_task = new ThreadTask();
         thread_task->set_task(&EventHandler::event_loop, sub_reactors_[i]);
         thread_pool_->add_task(thread_task);

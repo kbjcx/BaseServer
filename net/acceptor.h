@@ -1,10 +1,8 @@
 #ifndef BASESERVER_NET_ACCEPTOR_H_
 #define BASESERVER_NET_ACCEPTOR_H_
 
-#include "event.h"
-#include "event_handler.h"
-
-
+class EventHandler;
+class IOEvent;
 /*
  * Acceptor设计为单例模式
  * 接收Server创建的socket来注册新连接事件
@@ -12,7 +10,7 @@
  */
 class Acceptor {
 public:
-    static Acceptor* get_instance();
+    static Acceptor* instance();
     
     using NewConnectionCallback = void (*)(void*, int);
     

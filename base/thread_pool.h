@@ -1,12 +1,11 @@
 #ifndef BASE_SERVER_BASE_THREAD_POOL_H_
 #define BASE_SERVER_BASE_THREAD_POOL_H_
 
-#include <pthread.h>
-#include <list>
 #include <vector>
-
+#include <list>
 #include "thread.h"
-#include "event_handler.h"
+
+class EventHandler;
 
 const int MAX_THREADS = 1024;
 const int MAX_TASK_QUEUE = 65535;
@@ -17,6 +16,7 @@ public:
     using event_loop_t = void (EventHandler::*)();
 
 public:
+    static ThreadTask* new_instance();
     ThreadTask() : task_callback_(nullptr), event_loop_callback_(nullptr),
                    arg_(nullptr) {
         
@@ -65,6 +65,7 @@ public:
         THREADPOOL_GRACEFUL = 1
     };
     
+    static ThreadPool* new_instance(int num_workers, int max_jobs);
     ThreadPool(int num_workers, int max_jobs);
     ~ThreadPool();
     
@@ -109,53 +110,53 @@ private:
     bool quit_;
 };
 
-class ThreadPoolException : public std::exception {
-public:
-    ThreadPoolException(ThreadPool::ErrorType error_type,
-                        const char* filename,
-                        int line_num)
-            : error_type_(error_type),
-              line_num_(line_num),
-              filename_(filename),
-              message_() {
-        switch (error_type_) {
-            case ThreadPool::THREADPOOL_LOCK_FAILURE:
-                write_message("thread pool mutex or cond error");
-                break;
-            case ThreadPool::THREADPOOL_INVALID:
-                write_message("thread pool is invalid");
-                break;
-            case ThreadPool::THREADPOOL_SHUTDOWN:
-                write_message("thread pool is shutdown");
-                break;
-            case ThreadPool::THREADPOOL_GRACEFUL:
-                write_message("thread pool is graceful shutdown");
-                break;
-            case ThreadPool::THREADPOOL_THREAD_FAILURE:
-                write_message("thread fail");
-                break;
-            case ThreadPool::THREADPOOL_QUEUE_FULL:
-                write_message("task queue is full");
-                break;
-            default:write_message("undefined error in thread pool");
-        }
-    }
-    
-    const char* what() const noexcept override {
-        return message_;
-    }
-
-private:
-    void write_message(const char* msg) {
-        sprintf(message_, "%s filename: %s line number: %d \n",
-                msg, filename_, line_num_);
-    }
-
-private:
-    ThreadPool::ErrorType error_type_;
-    const char* filename_;
-    int line_num_;
-    char message_[1024];
-};
+//class ThreadPoolException : public std::exception {
+//public:
+//    ThreadPoolException(ThreadPool::ErrorType error_type,
+//                        const char* filename,
+//                        int line_num)
+//            : error_type_(error_type),
+//              line_num_(line_num),
+//              filename_(filename),
+//              message_() {
+//        switch (error_type_) {
+//            case ThreadPool::THREADPOOL_LOCK_FAILURE:
+//                write_message("thread pool mutex or cond error");
+//                break;
+//            case ThreadPool::THREADPOOL_INVALID:
+//                write_message("thread pool is invalid");
+//                break;
+//            case ThreadPool::THREADPOOL_SHUTDOWN:
+//                write_message("thread pool is shutdown");
+//                break;
+//            case ThreadPool::THREADPOOL_GRACEFUL:
+//                write_message("thread pool is graceful shutdown");
+//                break;
+//            case ThreadPool::THREADPOOL_THREAD_FAILURE:
+//                write_message("thread fail");
+//                break;
+//            case ThreadPool::THREADPOOL_QUEUE_FULL:
+//                write_message("task queue is full");
+//                break;
+//            default:write_message("undefined error in thread pool");
+//        }
+//    }
+//
+//    const char* what() const noexcept override {
+//        return message_;
+//    }
+//
+//private:
+//    void write_message(const char* msg) {
+//        sprintf(message_, "%s filename: %s line number: %d \n",
+//                msg, filename_, line_num_);
+//    }
+//
+//private:
+//    ThreadPool::ErrorType error_type_;
+//    const char* filename_;
+//    int line_num_;
+//    char message_[1024];
+//};
 
 #endif

@@ -5,6 +5,7 @@
 
 class Mutex {
 public:
+    static Mutex* new_instance();
     Mutex();
     ~Mutex();
     

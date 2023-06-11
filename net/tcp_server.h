@@ -1,13 +1,12 @@
 #ifndef BASE_SERVER_NET_TCP_SERVER_H_
 #define BASE_SERVER_NET_TCP_SERVER_H_
 
+#include <unordered_map>
 #include "net_address.h"
-#include "event.h"
-#include "acceptor.h"
-#include "tcp_connection.h"
-#include "connection_handler.h"
-#include "unordered_map"
 
+class EventHandler;
+class TcpConnection;
+class Acceptor;
 /*
  * TcpServer是服务的抽象类,其作用是启动服务
  * 根据不同使用需求,创建派生类来处理不同的连接与断开连接处理

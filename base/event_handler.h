@@ -2,9 +2,12 @@
 #define BASESERVER_BASE_EVENTHANDLER_H_
 
 #include <vector>
+#include <string>
 
-#include "event.h"
-#include "poller_factory.h"
+class IOEvent;
+class TriggerEvent;
+class Poller;
+class PollerFactory;
 
 /*
  * 用于处理各种事件
@@ -12,9 +15,9 @@
  * 触发事件: 添加存储触发事件等待统一处理
  * 每个SubReactor都有一个EventHandler
  */
-class TriggerEvent;
 class EventHandler {
 public:
+    static EventHandler* new_instance(std::string poller_mode);
     explicit EventHandler(std::string poller_mode);
     ~EventHandler();
     

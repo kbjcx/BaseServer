@@ -19,7 +19,7 @@ Logger::~Logger() {
         printf("%s \n", data_);
     }
     else {
-        AsyncLogger::get_instance()->append(data_, (int)(cur_ptr_ - data_));
+        AsyncLogger::instance()->append(data_, (int)(cur_ptr_ - data_));
     }
 }
 

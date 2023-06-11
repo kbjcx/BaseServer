@@ -1,7 +1,5 @@
 #include "net_address.h"
 
-#include <utility>
-
 Ipv4Address::Ipv4Address(std::string ip, uint16_t port)
         : ip_(std::move(ip)), port_(port), sockaddr_in_() {
     sockaddr_in_.sin_family = AF_INET;

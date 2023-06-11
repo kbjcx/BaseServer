@@ -1,0 +1,8 @@
+#ifndef BASESERVER_BASE_SINGLETON_H_
+#define BASESERVER_BASE_SINGLETON_H_
+
+#include "new.h"
+
+
+
+#endif //BASESERVER_BASE_SINGLETON_H_

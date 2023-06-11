@@ -2,7 +2,7 @@
 #define BASESERVER_NET_HTTP_SERVER_H_
 
 #include "tcp_server.h"
-#include "http_connection.h"
+
 
 class HttpServer : public TcpServer {
 public:

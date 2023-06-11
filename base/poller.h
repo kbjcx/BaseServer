@@ -1,9 +1,9 @@
 #ifndef BASE_SERVER_BASE_POLLER_H_
-    #define BASE_SERVER_BASE_POLLER_H_
+#define BASE_SERVER_BASE_POLLER_H_
 
-#include "event.h"
 #include <map>
 
+class IOEvent;
 class Poller {
 public:
     virtual ~Poller() = default;

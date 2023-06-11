@@ -10,6 +10,7 @@
 
 class LogBuffer {
 public:
+    static LogBuffer* new_instance();
     LogBuffer();
     ~LogBuffer();
     
@@ -62,7 +63,7 @@ class AsyncLogger : public Thread {
 public:
     ~AsyncLogger() override;
     
-    static AsyncLogger* get_instance();
+    static AsyncLogger* instance();
     
     void append(const char* log_line, int len);
     

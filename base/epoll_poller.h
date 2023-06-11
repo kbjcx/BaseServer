@@ -1,12 +1,13 @@
 #ifndef BASE_SERVER_BASE_EPOLL_POLLER_H_
 #define BASE_SERVER_BASE_EPOLL_POLLER_H_
 
-#include "poller.h"
 #include <vector>
 #include <sys/epoll.h>
+#include "poller.h"
 
 class EpollPoller : public Poller {
 public:
+    static EpollPoller* new_instance();
     EpollPoller();
     ~EpollPoller() override;
     

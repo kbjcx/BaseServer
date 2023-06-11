@@ -1,11 +1,11 @@
 #ifndef BASESERVER_BASE_COND_H_
 #define BASESERVER_BASE_COND_H_
 
-#include "mutex.h"
 #include <pthread.h>
-
+class Mutex;
 class Cond {
 public:
+    static Cond* new_instance();
     Cond();
     ~Cond();
     

@@ -1,12 +1,15 @@
 #include "event_handler.h"
+#include "poller_factory.h"
 
-#include <utility>
 
+EventHandler* EventHandler::new_instance(std::string poller_mode) {
+    return New<EventHandler>::allocate(poller_mode);
+}
 
 EventHandler::EventHandler(std::string poller_mode)
         : poller_(nullptr), trigger_event_list_{},
           quit_(false), poller_factory_(nullptr) {
-    poller_factory_ = PollerFactory::get_instance();
+    poller_factory_ = PollerFactory::instance();
     poller_ = poller_factory_->create_poller(poller_mode);
 }
 

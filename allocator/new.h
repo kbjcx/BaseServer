@@ -3,11 +3,6 @@
 
 #include "allocator.h"
 #include "construct.h"
-template <class T>
-class New;
-class Delete;
-#define NEW(type) New<type>::allocate
-#define DELETE(ptr) Delete::release(ptr)
 
 template <class T>
 class New {

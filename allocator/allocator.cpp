@@ -1,7 +1,8 @@
 #include "allocator.h"
+#include "mutex.h"
 #include <cstdlib>
 
-Allocator* Allocator::instance_ = new Allocator();
+Allocator* Allocator::instance_ = nullptr;
 
 Allocator::Allocator() : mutex_(new Mutex),
                          start_free_(nullptr),
@@ -14,14 +15,17 @@ Allocator::Allocator() : mutex_(new Mutex),
 Allocator::~Allocator() = default;
 
 void* Allocator::allocate(uint32_t size) {
-    return get_instance()->alloc(size);
+    return instance()->alloc(size);
 }
 
 void Allocator::deallocator(void* ptr, uint32_t size) {
-    get_instance()->dealloc(ptr, size);
+    instance()->dealloc(ptr, size);
 }
 
-Allocator* Allocator::get_instance() {
+Allocator* Allocator::instance() {
+    if (!instance_) {
+        instance_ = new Allocator();
+    }
     return instance_;
 }
 

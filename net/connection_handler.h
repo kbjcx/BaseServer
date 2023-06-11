@@ -1,10 +1,12 @@
 #ifndef BASESERVER_NET_CONNECTION_HANDLER_H_
 #define BASESERVER_NET_CONNECTION_HANDLER_H_
 
-#include "thread_pool.h"
-#include "tcp_connection.h"
-#include "tcp_server.h"
+#include <vector>
 
+class TcpConnection;
+class ThreadPool;
+class EventHandler;
+class TriggerEvent;
 /*
  * SubReactor集合, 用于处理连接事件, 每个SubReactor工作于子线程, 创建一个简单的线程池
  * 用于处理请求读写事件

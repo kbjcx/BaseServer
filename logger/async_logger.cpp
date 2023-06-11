@@ -1,5 +1,17 @@
 #include "async_logger.h"
+#include "new.h"
 #include <cassert>
+AsyncLogger* AsyncLogger::instance_ = nullptr;
+AsyncLogger* AsyncLogger::instance() {
+    if (!instance_) {
+        instance_ = new AsyncLogger("./server.log");
+    }
+    return instance_;
+}
+
+LogBuffer* LogBuffer::new_instance() {
+    return New<LogBuffer>::allocate();
+}
 
 LogBuffer::LogBuffer() : data_(), cur_ptr_(data_) {}
 
@@ -12,11 +24,9 @@ void LogBuffer::append(const char* buffer, size_t len) {
     }
 }
 
-AsyncLogger* AsyncLogger::instance_ = new AsyncLogger("./server.log");
-
 AsyncLogger::AsyncLogger(std::string file)
-        : file_(std::move(file)), run_(true), mutex_(new Mutex()),
-        cond_(new Cond()), file_fd(nullptr), cur_buffer_(nullptr) {
+        : file_(std::move(file)), run_(true), mutex_(Mutex::new_instance()),
+        cond_(Cond::new_instance()), file_fd(nullptr), cur_buffer_(nullptr) {
     assert(mutex_);
     assert(cond_);
     
@@ -52,10 +62,6 @@ AsyncLogger::~AsyncLogger() {
     
     delete mutex_;
     delete cond_;
-}
-
-AsyncLogger* AsyncLogger::get_instance() {
-    return instance_;
 }
 
 void AsyncLogger::append(const char* log_line, int len) {

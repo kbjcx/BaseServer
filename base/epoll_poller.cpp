@@ -1,9 +1,15 @@
 #include "epoll_poller.h"
 #include <unistd.h>
 #include <cstring>
+#include "new.h"
+#include "event.h"
 
 static const int init_event_list_size = 16;
 static const int epoll_timeout = 10000;
+
+EpollPoller* EpollPoller::new_instance() {
+    New<EpollPoller>::allocate();
+}
 
 EpollPoller::EpollPoller() : epoll_event_list_(init_event_list_size),
                              epoll_fd_(-1){

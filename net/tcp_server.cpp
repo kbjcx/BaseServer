@@ -1,8 +1,10 @@
 #include "tcp_server.h"
 
 #include <sys/socket.h>
-#include "epoll_poller.h"
-#include <cstring>
+#include "acceptor.h"
+#include "event_handler.h"
+#include "connection_handler.h"
+
 
 TcpServer::TcpServer(const Ipv4Address& ipv_4_address)
         : ipv_4_address_(ipv_4_address), acceptor_(nullptr),
@@ -23,10 +25,10 @@ TcpServer::~TcpServer() {
 }
 
 void TcpServer::start() {
-    main_reactor_ = new EventHandler();
+    main_reactor_ = new EventHandler("epoll");
     // TODO 根据核心数设置Subreactor数量
     sub_reactors_ = new ConnectionHandler(this, 4);
-    acceptor_ = Acceptor::get_instance();
+    acceptor_ = Acceptor::instance();
     acceptor_->set_main_reactor(main_reactor_);
     // TODO 异常处理
     int server_fd = socket(PF_INET,

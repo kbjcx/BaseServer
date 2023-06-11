@@ -1,7 +1,13 @@
 #include "poll_poller.h"
 #include <cassert>
+#include "new.h"
+#include "event.h"
 
 static int POLL_TIMEOUT = 10000;
+
+PollPoller* PollPoller::new_instance() {
+    New<PollPoller>::allocate();
+}
 
 PollPoller::PollPoller() : poll_fd_list_(0), io_event_list_(0),
                            poll_fd_map_(0) {

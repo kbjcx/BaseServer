@@ -1,14 +1,13 @@
 #ifndef BASESERVER_BASE_POLLER_FACTORY_H_
 #define BASESERVER_BASE_POLLER_FACTORY_H_
 
-#include "poller.h"
-#include "epoll_poller.h"
-#include "poll_poller.h"
-#include <cstring>
+#include <string>
+
+class Poller;
 
 class PollerFactory {
 public:
-    static PollerFactory* get_instance();
+    static PollerFactory* instance();
     ~PollerFactory();
     
     Poller* create_poller(const std::string& mode);

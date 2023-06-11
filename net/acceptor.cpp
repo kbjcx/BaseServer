@@ -2,9 +2,11 @@
 #include "sys/socket.h"
 #include "arpa/inet.h"
 #include <cstring>
+#include "event_handler.h"
+#include "event.h"
 
 Acceptor* Acceptor::instance_ = nullptr;
-Acceptor* Acceptor::get_instance() {
+Acceptor* Acceptor::instance() {
     if (instance_ == nullptr) {
         instance_ = new Acceptor();
     }

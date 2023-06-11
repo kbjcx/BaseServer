@@ -1,4 +1,9 @@
 #include "mutex.h"
+#include "new.h"
+
+Mutex* Mutex::new_instance() {
+    return New<Mutex>::allocate();
+}
 
 Mutex::Mutex() : mutex_() {
     pthread_mutex_init(&mutex_, nullptr);

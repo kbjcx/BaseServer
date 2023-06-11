@@ -1,6 +1,12 @@
 #include "cond.h"
 #include <ctime>
 #include <sys/time.h>
+#include "mutex.h"
+#include "new.h"
+
+Cond* Cond::new_instance() {
+    return New<Cond>::allocate();
+}
 
 Cond::Cond() : cond_() {
     pthread_cond_init(&cond_, nullptr);

@@ -2,13 +2,14 @@
 #define BASESERVER_BASE_POLLPOLLER_H_
 
 #include <vector>
-#include <map>
 #include <unordered_map>
+#include <poll.h>
 #include "poller.h"
-#include "poll.h"
+
 
 class PollPoller : public Poller {
 public:
+    static PollPoller* new_instance();
     ~PollPoller() override;
     PollPoller();
     

@@ -1,9 +1,9 @@
 #ifndef BASESERVER_ALLOCATOR_ALLOCATOR_H_
 #define BASESERVER_ALLOCATOR_ALLOCATOR_H_
 
-#include "mutex.h"
 #include <cstdint>
 
+class Mutex;
 class Allocator {
 public:
     enum {ALIGN = 8};
@@ -23,7 +23,7 @@ private:
     
     ~Allocator();
     
-    static Allocator* get_instance();
+    static Allocator* instance();
     
     void* alloc(uint32_t size);
     void dealloc(void* ptr, uint32_t size);
